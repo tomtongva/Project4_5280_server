@@ -100,7 +100,6 @@ app.post('/api/user/update', jwtValidateUserMiddleware, async (req, res) => {
     }
 });
 
-
 app.post('/api/signup', async (req, res) => {
     console.log("signup new user " + req.body.email);
 
