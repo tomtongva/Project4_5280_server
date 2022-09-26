@@ -32,6 +32,10 @@ app.listen(process.env.PORT || port, () => {
     console.log(`Listening on port ${port}`);
 });
 
+app.get('/', (req, res) => { //can declare get our put route, first param is the route, second param is the function that is executed
+    res.send("Hello world");
+});
+
 const jwtValidateUserMiddleware = (req, res, next) => {
     console.log("validate user");
 
