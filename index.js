@@ -13,20 +13,8 @@ app.get('/', (req, res) => { //can declare get our put route, first param is the
     res.send("Hello world");
 });
 
-
 app.post("/api/auth", async (req, res) => {
 
-    let user = await findUser(req.body.email, req.body.password);
-    console.log("found " + user);
-    if (user) {
-        let token = jwt.sign({uid: user._id, name: user.firstName + " " + user.lastName, 
-                                exp:Math.floor(Date.now()/1000)+60*1,
-                                currentTime:Date.now()}, jwtSecret);
-        console.log("generating token for " + user.firstName);
-
-        res.send({email: user.email, firstName: user.firstName, lastName: user.lastName, gender: user.gender,
-            city: user.city, token: token, age: user.age, weight: user.weight, address: user.address});
-    } else {
-        res.status(401).send({error: "You're not found"});
-    }
+    res.send("Hello world post");
 });
+
