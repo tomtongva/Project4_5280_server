@@ -30,6 +30,7 @@ app.listen(process.env.PORT || port, () => {
     //var os = require('os');
     //console.log('Listening at http://' + os.hostname + ':${port}')
     console.log(`Listening on port ${port}`);
+    console.log(`${process.env.PORT}`);
 });
 
 app.get('/', (req, res) => { //can declare get our put route, first param is the route, second param is the function that is executed
