@@ -120,3 +120,68 @@ app.post('/api/logout', async (req, res) => {
     let userId;
 }, jwtValidateUserMiddleware);
 
+const { MongoClient } = require("mongodb");
+// Connection URI
+const uri =
+  "mongodb+srv://group35280:uncc2022@cluster0.rts9eht.mongodb.net/test" //"mongodb://localhost:27017/?maxPoolSize=20&w=majority"; //mongodb+srv://localhost:27017/?maxPoolSize=20&w=majorit
+// Create a new MongoClient
+const client = new MongoClient(uri);
+
+async function createUser(email, password, firstName, lastName, gender, city) {
+    try {
+        await client.connect();
+        
+        const doc = {
+            email: email,
+            password: password,
+            firstName: firstName,
+            lastName: lastName,
+            gender: gender,
+            city: city
+        }
+        const result = await client.db("users").collection("user").insertOne(doc);
+        if (result) {
+            console.log("user created with id " + result.insertedId);
+            return result.insertedId;
+        }
+      } finally {
+        await client.close();
+      }
+}
+
+async function findUser(email, password) {
+    try {
+        await client.connect();
+
+        var user;
+        if (password != undefined)
+            user = await client.db("users").collection("user").findOne({email: email, password: password});
+        else
+            user = await client.db("users").collection("user").findOne({email: email});
+
+        if (user) {
+            console.log("user is " + user.name);
+            return user;
+        }
+      } finally {
+        await client.close();
+      }
+}
+
+async function updateUser(email, firstName, lastName, gender, city, age, weight, address) {
+    try {
+        await client.connect();
+        
+        const filter = {email: email};
+        console.log("attempt to update " + email);
+        const updateDoc = {$set: {firstName: firstName, lastName: lastName, gender: gender, city: city,
+                                    age: age, weight: weight, address: address}};
+        var updated = await client.db("users").collection("user").updateOne(filter, updateDoc);
+        if (updated) {
+            console.log("user was updated ")
+        }
+        return updated;
+      } finally {
+        await client.close();
+      }
+}
