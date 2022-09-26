@@ -102,6 +102,43 @@ app.post('/api/user/update', jwtValidateUserMiddleware, async (req, res) => {
 
 app.post('/api/signup', async (req, res) => {
     console.log("signup new user " + req.body.email);
+
+    if (null == req.body.email) {
+		console.log("registration missing email");
+		res.status(401).send(({error: "email required"}));
+		return;
+	}
+	
+	if (null == req.body.password) {
+		console.log("registration missing password");
+		res.status(401).send(({error: "password required"}));
+		return;
+	}
+	
+	if (null == req.body.firstName) {
+		console.log("registration missing first name");
+		res.status(401).send(({error: "first name required"}));
+		return;
+	}
+	
+	if (null == req.body.lastName) {
+		console.log("registration missing last name");
+		res.status(401).send(({error: "last name required"}));
+		return;
+	}
+	
+	if (null == req.body.gender) {
+		console.log("registration missing gender");
+		res.status(401).send(({error: "gender required"}));
+		return;
+	}
+	
+	if (null == req.body.city) {
+		console.log("registration missing city");
+		res.status(401).send(({error: "city required"}));
+		return;
+	}
+
     let user = await findUser(req.body.email)
     console.log("does user exist "  + user)
     let userId;
