@@ -1,9 +1,7 @@
 const express = require("express"); //import express library
 const app = express(); //app is an instance of express
 const port = 8080; //port number for application
-const jwt  = require("jsonwebtoken");
-const jwtSecret = "Group3KeyForJWT";
-const headerTokenKey = "x-jwt-token";
+
 
 app.listen(process.env.PORT || port, () => { //declare a web server
    		console.log(`Listening at http://localhost:${port}`) //careful with slanted single quote
