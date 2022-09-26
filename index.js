@@ -37,6 +37,10 @@ app.get('/', (req, res) => { //can declare get our put route, first param is the
     res.send("Hello world");
 });
 
+app.post('/hello', (req, res) => { //can declare get our put route, first param is the route, second param is the function that is executed
+    res.send("Hello world post");
+});
+
 const jwtValidateUserMiddleware = (req, res, next) => {
     console.log("validate user");
 
