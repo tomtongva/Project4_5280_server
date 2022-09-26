@@ -100,24 +100,24 @@ app.post('/api/user/update', jwtValidateUserMiddleware, async (req, res) => {
     }
 });
 
-/*const emailValidator = require('deep-email-validator'); //npm install deep-email-validator, https://www.abstractapi.com/guides/node-email-validation
+const emailValidator = require('deep-email-validator'); //npm install deep-email-validator, https://www.abstractapi.com/guides/node-email-validation
 async function isEmailValid(email) {
     return emailValidator.validate(email)
-}*/
+}
 
 app.post('/api/signup', async (req, res) => {
     console.log("signup new user " + req.body.email);
 
-    /*const {valid, reason, validators} = await isEmailValid(req.body.email);
+    const {valid, reason, validators} = await isEmailValid(req.body.email);
 
-    if (!valid && !validators[reason].reason.includes("suggested email")) {
+    if (!valid) {
 		console.log("registration missing valid email");
 		return res.status(401).send({
             message: "valid email required",
             reason: validators[reason].reason
         });
 		return;
-	}*/
+	}
 	
 	if (null == req.body.password) {
 		console.log("registration missing password");
