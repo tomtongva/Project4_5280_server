@@ -13,10 +13,6 @@ app.get('/', (req, res) => { //can declare get our put route, first param is the
     res.send("Hello world");
 });
 
-app.post("/api/auth", async (req, res) => {
-
-    res.send("Hello world post");
-});
 
 app.post("/api/auth", async (req, res) => {
 
