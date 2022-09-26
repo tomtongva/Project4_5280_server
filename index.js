@@ -1,7 +1,7 @@
 const express = require("express"); //import express library
 const app = express(); //app is an instance of express
 const port = 8080; //port number for application
-// const jwt  = require("jsonwebtoken");
+const jwt  = require("jsonwebtoken");
 const jwtSecret = "Group3KeyForJWT";
 const headerTokenKey = "x-jwt-token";
 
