@@ -156,7 +156,9 @@ async function createUser(email, password, firstName, lastName, gender, city) {
 
 async function findUser(email, password) {
     try {
+        console.log("findUser connect to db start");
         await client.connect();
+        console.log("findUser connect to db successful");
 
         var user;
         if (password != undefined)
