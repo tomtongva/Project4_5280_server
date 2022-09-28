@@ -8,12 +8,12 @@
 ## Implementation
 APIs:
 	- Registration: /api/signup <br />
-		- If the registering email (password excluded from match) is found in the database, user is presented with a toast error message. <br />
+		- If the registering email (password excluded from match) is found in MongoDB Atlas, user is presented with a toast error message. <br />
 	- Auth: /api/auth <br />
 		- Both email and password must match. <br />
 	- Protected APIs: <br />
 		- User Profile Update: /api/user/update <br />
-Creating a new user uses the Registration API. If API returns a successful user then go to user profile screen. <br />
+Creating a new user uses the Registration API. If API successfully creates a USER document in the USERS collection then go to user profile screen. <br />
 Login uses the Auth API. API returns a user JSON if email and password match database entries. If no match a toast message is displayed. <br />
 A successful login through either Registration or Auth APIs will return a token back to the client. <br />
 If token expires or there is any exception during an update then user is presented with a toast message that something went wrong and user must logout. <br />
