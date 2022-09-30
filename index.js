@@ -4,6 +4,8 @@ const port = 8080;
 const jwt  = require("jsonwebtoken");
 const jwtSecret = "Group3KeyForJWT";
 const headerTokenKey = "x-jwt-token";
+const bcrypt = require('bcryptjs');
+const bcryptSaltNum = 12;
 
 app.listen(process.env.PORT || port, () => {
     console.log(`Listening on port ${port}`);
@@ -63,7 +65,7 @@ app.post("/api/auth", async (req, res) => {
 });
 
 app.post('/api/user/update', jwtValidateUserMiddleware, async (req, res) => {
-    let updated = await updateUser(req.body.email, req.body.firstName, req.body.lastName, req.body.gender, req.body.city,
+    let updated = await updateUser(req.decodedToken.uid, req.body.firstName, req.body.lastName, req.body.gender, req.body.city,
                                     req.body.age, req.body.weight, req.body.address);
     if (updated) {
         console.log("send successful updated response back");
@@ -126,18 +128,16 @@ app.post('/api/signup', async (req, res) => {
 		return;
 	}
 
-    let user = await findUser(req.body.email)
-    console.log("does user exist "  + user)
-    let userId;
-    if (null == user) {
+    
+    let userId = null;
+    try {
         userId = await createUser(req.body.email, req.body.password, req.body.firstName, req.body.lastName, req.body.gender,
             req.body.city);
-        console.log("got user id " + userId);
-    } else {
-        console.log("user exists " + user.email);
-        res.status(401).send({error: "Unable to register at this time "});
-        return;
-    }
+        } catch (exception) {
+            console.log(exception);
+            res.status(401).send({error: "Unable to register at this time "});
+            return;
+        }
 
     res.send({message: "You're registered ", id: userId, email: req.body.email, firstName: req.body.firstName, 
         lastName: req.body.lastName, gender: req.body.gender, city: req.body.city});
@@ -151,18 +151,18 @@ app.post('/api/logout', async (req, res) => {
 
 const { MongoClient } = require("mongodb");
 // Connection URI
-const uri =
-  "mongodb+srv://group35280:uncc2022@cluster0.rts9eht.mongodb.net/test" //"mongodb://localhost:27017/?maxPoolSize=20&w=majority"; //mongodb+srv://localhost:27017/?maxPoolSize=20&w=majorit
+const uri = "mongodb://localhost:27017/?maxPoolSize=20&w=majority";
+  //"mongodb+srv://group35280:uncc2022@cluster0.rts9eht.mongodb.net/test" //"mongodb://localhost:27017/?maxPoolSize=20&w=majority"; //mongodb+srv://localhost:27017/?maxPoolSize=20&w=majorit
 // Create a new MongoClient
 const client = new MongoClient(uri);
 
 async function createUser(email, password, firstName, lastName, gender, city) {
-    try {
+    try{
         await client.connect();
-        
+
         const doc = {
             email: email,
-            password: password,
+            password: getEncryptedPassword(password),
             firstName: firstName,
             lastName: lastName,
             gender: gender,
@@ -182,13 +182,8 @@ async function findUser(email, password) {
     try {
         console.log("findUser connect to db start");
         await client.connect();
-        console.log("findUser connect to db successful");
 
-        var user;
-        if (password != undefined)
-            user = await client.db("users").collection("user").findOne({email: email, password: password});
-        else
-            user = await client.db("users").collection("user").findOne({email: email});
+        var user = await client.db("users").collection("user").findOne({email: email, password: getEncryptedPassword(password)});
 
         if (user) {
             console.log("user is " + user.name);
@@ -199,12 +194,12 @@ async function findUser(email, password) {
       }
 }
 
-async function updateUser(email, firstName, lastName, gender, city, age, weight, address) {
+async function updateUser(uid, firstName, lastName, gender, city, age, weight, address) {
     try {
         await client.connect();
         
-        const filter = {email: email};
-        console.log("attempt to update " + email);
+        const filter = {uid: uid};
+        console.log("attempt to update " + uid);
         const updateDoc = {$set: {firstName: firstName, lastName: lastName, gender: gender, city: city,
                                     age: age, weight: weight, address: address}};
         var updated = await client.db("users").collection("user").updateOne(filter, updateDoc);
@@ -215,4 +210,12 @@ async function updateUser(email, firstName, lastName, gender, city, age, weight,
       } finally {
         await client.close();
       }
+}
+
+async function getEncryptedPassword(password) {
+    let salt = await bcrypt.genSalt(bcryptSaltNum)
+    let encryptedPassword = await bcrypt.hash(password, salt)
+    console.log("password " + password + " " + encryptedPassword);
+
+    return encryptedPassword;
 }
