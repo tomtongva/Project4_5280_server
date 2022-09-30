@@ -1,0 +1,121 @@
+{ "results": [
+	{
+        "discount": 10,
+        "name": "Pineapple",
+        "photo": "https://drive.google.com/uc?id=1cZoIlB-E0jOWXM_KfCiNAPqILzOmllSF",
+        "price": 1.18,
+        "region": "produce"
+    },
+	{
+        "discount": 10,
+        "name": "Croissants",
+        "photo": "https://drive.google.com/uc?id=169iWjRgeiz18-lIXdBIDq0Z18yrpUMcA",
+        "price": 2.79,
+        "region": "grocery"
+    },
+	{
+        "discount": 20,
+        "name": "Brach's Jelly Beans",
+        "photo": "https://drive.google.com/uc?id=1iSFNEIuOHTumIeTJQ-tbGsH2TC78UEED",
+        "price": 2.21,
+        "region": "grocery"
+    },
+	{
+        "discount": 20,
+        "name": "Dial Soap",
+        "photo": "https://drive.google.com/uc?id=1nj2-_57VtZ0t937BjKsR4qsTEsRc-Wkc",
+        "price": 2.99,
+        "region": "lifestyle"
+    },
+	{
+        "discount": 10,
+        "name": "Oranges",
+        "photo": "https://drive.google.com/uc?id=1i4cSHzZUrMtpQxm2MJ78dkzP2Gpag0bD",
+        "price": 0.89,
+        "region": "produce"
+    },
+	{
+        "discount": 15,
+        "name": "Scotch Brite Sponges",
+        "photo": "https://drive.google.com/uc?id=1vQaNo0FfiA8ciCSTryE3Siq0EwMHnoVM",
+        "price": 5.89,
+        "region": "lifestyle"
+    },
+	{
+        "discount": 15,
+        "name": "Fresh Express Lettuce",
+        "photo": "https://drive.google.com/uc?id=1qPBf10IAS-2QZa4yfFNY74WbyKj_6PNb",
+        "price": 3.69,
+        "region": "produce"
+    },
+	{
+        "discount": 15,
+        "name": "Coca Cola",
+        "photo": "https://drive.google.com/uc?id=1Z4ZBNacfiw58rrgVlEsNN5n5HDj9YGIz",
+        "price": 6.99,
+        "region": "grocery"
+    },
+	{
+        "discount": 10,
+        "name": "Gatorade",
+        "photo": "https://drive.google.com/uc?id=1eiiSrd8xA5ZeFaNGGT-lU3LLBkyAKT8d",
+        "price": 3.89,
+        "region": "grocery"
+    },
+	{
+        "discount": 10,
+        "name": "Organix Conditioner",
+        "photo": "https://drive.google.com/uc?id=1KsnHrKGGPPK03fmTFX8n_UJfaS5WmEf2",
+        "price": 13.46,
+        "region": "lifestyle"
+    },
+	{
+        "discount": 10,
+        "name": "Spinach",
+        "photo": "https://drive.google.com/uc?id=1ndIZkeASWaCSrlA_gcQE9qeDdxeHIfSM",
+        "price": 1.23,
+        "region": "produce"
+    },
+	{
+        "discount": 15,
+        "name": "Cranberry Cocktail",
+        "photo": "https://drive.google.com/uc?id=1pGJo9-0vAiIZ5S52W8m_teYbgs7ccq0d",
+        "price": 1.89,
+        "region": "grocery"
+    },
+	{
+        "discount": 20,
+        "name": "Milk",
+        "photo": "https://drive.google.com/uc?id=1OM0XKZyd1CPsPOeqbeoBbYn4rxRDC8Hn",
+        "price": 10.5,
+        "region": "grocery"
+    },
+	{
+        "discount": 15,
+        "name": "HI-C Fruit Punch",
+        "photo": "https://drive.google.com/uc?id=1UxrEhL4tCJowBgSGzVKgrwhl10QJ-vv9",
+        "price": 4.67,
+        "region": "grocery"
+    },
+	{
+        "discount": 10,
+        "name": "Nectarines",
+        "photo": "https://drive.google.com/uc?id=1Onj0zrO5HJfYGgEiiljq6WEtbGAagv4I",
+        "price": 3.67,
+        "region": "produce"
+    },
+	{
+        "discount": 10,
+        "name": "Fresh Seedless Whole Watermelon",
+        "photo": "https://drive.google.com/uc?id=10CD62nNk0XXIRG2_W-sCmj9U_z0y8v-T",
+        "price": 6.99,
+        "region": "produce"
+    },
+	{
+        "discount": 15,
+        "name": "US Weekly",
+        "photo": "https://drive.google.com/uc?id=1so6qXSzDg70c5sXViFMDTSAn545hrlKj",
+        "price": 4.99,
+        "region": "lifestyle"
+    }
+] }
