@@ -2,119 +2,119 @@
 	{
         "discount": 10,
         "name": "Pineapple",
-        "photo": "pineapple.png",
+        "photo": "https://drive.google.com/file/d/1cZoIlB-E0jOWXM_KfCiNAPqILzOmllSF/view?usp=sharing",
         "price": 1.18,
         "region": "produce"
     },
 	{
         "discount": 10,
         "name": "Croissants",
-        "photo": "croissants.png",
+        "photo": "https://drive.google.com/file/d/169iWjRgeiz18-lIXdBIDq0Z18yrpUMcA/view?usp=sharing",
         "price": 2.79,
         "region": "grocery"
     },
 	{
         "discount": 20,
         "name": "Brach's Jelly Beans",
-        "photo": null,
+        "photo": "https://drive.google.com/file/d/1iSFNEIuOHTumIeTJQ-tbGsH2TC78UEED/view?usp=sharing",
         "price": 2.21,
         "region": "grocery"
     },
 	{
         "discount": 20,
         "name": "Dial Soap",
-        "photo": "jelly-beans.png",
+        "photo": "https://drive.google.com/file/d/1nj2-_57VtZ0t937BjKsR4qsTEsRc-Wkc/view?usp=sharing",
         "price": 2.99,
         "region": "lifestyle"
     },
 	{
         "discount": 10,
         "name": "Oranges",
-        "photo": "oranges.png",
+        "photo": "https://drive.google.com/file/d/1i4cSHzZUrMtpQxm2MJ78dkzP2Gpag0bD/view?usp=sharing",
         "price": 0.89,
         "region": "produce"
     },
 	{
         "discount": 15,
         "name": "Scotch Brite Sponges",
-        "photo": "scotch-brite-sponges.png",
+        "photo": "https://drive.google.com/file/d/1vQaNo0FfiA8ciCSTryE3Siq0EwMHnoVM/view?usp=sharing",
         "price": 5.89,
         "region": "lifestyle"
     },
 	{
         "discount": 15,
         "name": "Fresh Express Lettuce",
-        "photo": "lettuce.jpg",
+        "photo": "https://drive.google.com/file/d/1qPBf10IAS-2QZa4yfFNY74WbyKj_6PNb/view?usp=sharing",
         "price": 3.69,
         "region": "produce"
     },
 	{
         "discount": 15,
         "name": "Coca Cola",
-        "photo": "coca-cola.png",
+        "photo": "https://drive.google.com/file/d/1Z4ZBNacfiw58rrgVlEsNN5n5HDj9YGIz/view?usp=sharing",
         "price": 6.99,
         "region": "grocery"
     },
 	{
         "discount": 10,
         "name": "Gatorade",
-        "photo": "gatorade.png",
+        "photo": "https://drive.google.com/file/d/1eiiSrd8xA5ZeFaNGGT-lU3LLBkyAKT8d/view?usp=sharing",
         "price": 3.89,
         "region": "grocery"
     },
 	{
         "discount": 10,
         "name": "Organix Conditioner",
-        "photo": "organix-conditioner.png",
+        "photo": "https://drive.google.com/file/d/1KsnHrKGGPPK03fmTFX8n_UJfaS5WmEf2/view?usp=sharing",
         "price": 13.46,
         "region": "lifestyle"
     },
 	{
         "discount": 10,
         "name": "Spinach",
-        "photo": "spinach.png",
+        "photo": "https://drive.google.com/file/d/1ndIZkeASWaCSrlA_gcQE9qeDdxeHIfSM/view?usp=sharing",
         "price": 1.23,
         "region": "produce"
     },
 	{
         "discount": 15,
         "name": "Cranberry Cocktail",
-        "photo": "cranberry-cocktail.png",
+        "photo": "https://drive.google.com/file/d/1pGJo9-0vAiIZ5S52W8m_teYbgs7ccq0d/view?usp=sharing",
         "price": 1.89,
         "region": "grocery"
     },
 	{
         "discount": 20,
         "name": "Milk",
-        "photo": "milk.jpg",
+        "photo": "https://drive.google.com/file/d/1OM0XKZyd1CPsPOeqbeoBbYn4rxRDC8Hn/view?usp=sharing",
         "price": 10.5,
         "region": "grocery"
     },
 	{
         "discount": 15,
         "name": "HI-C Fruit Punch",
-        "photo": "hi-c-fruit-punch.png",
+        "photo": "https://drive.google.com/file/d/1UxrEhL4tCJowBgSGzVKgrwhl10QJ-vv9/view?usp=sharing",
         "price": 4.67,
         "region": "grocery"
     },
 	{
         "discount": 10,
         "name": "Nectarines",
-        "photo": "fresh-nectarines.png",
+        "photo": "https://drive.google.com/file/d/1Onj0zrO5HJfYGgEiiljq6WEtbGAagv4I/view?usp=sharing",
         "price": 3.67,
         "region": "produce"
     },
 	{
         "discount": 10,
         "name": "Fresh Seedless Whole Watermelon",
-        "photo": "watermellon.jpg",
+        "photo": "https://drive.google.com/file/d/10CD62nNk0XXIRG2_W-sCmj9U_z0y8v-T/view?usp=sharing",
         "price": 6.99,
         "region": "produce"
     },
 	{
         "discount": 15,
         "name": "US Weekly",
-        "photo": "us-weekly.png",
+        "photo": "https://drive.google.com/file/d/1so6qXSzDg70c5sXViFMDTSAn545hrlKj/view?usp=sharing",
         "price": 4.99,
         "region": "lifestyle"
     }
