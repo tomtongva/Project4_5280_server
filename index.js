@@ -54,14 +54,21 @@ const jwtValidateUserMiddleware = (req, res, next) => {
 app.use(express.urlencoded());
 app.use(express.json());
 app.post("/api/auth", async (req, res) => {
-  let user = await findUser(req.body.email, req.body.password);
-  console.log("found " + user);
+  let user = await findUser(req.body.email);
+  console.log("found " + user + " " + user.password);
+  
+  let isValidPassword = null;
   if (user) {
+    isValidPassword = await bcrypt.compare(req.body.password, user.password);
+    console.log("is password valid " + isValidPassword);
+  }
+
+  if (isValidPassword) {
     let token = jwt.sign(
       {
         uid: user._id,
         name: user.firstName + " " + user.lastName,
-        exp: Math.floor(Date.now() / 1000) + 60 * 1,
+        exp: Math.floor(Date.now() / 1000) + 60 * 20,
         currentTime: Date.now(),
       },
       jwtSecret
@@ -157,10 +164,14 @@ app.post("/api/signup", async (req, res) => {
   }
 
   let userId = null;
+  
+  encryptedPassword = await getEncryptedPassword(req.body.password);
+  console.log("new password: " + encryptedPassword);
+
   try {
     userId = await createUser(
       req.body.email,
-      req.body.password,
+      encryptedPassword,
       req.body.firstName,
       req.body.lastName,
       req.body.gender,
@@ -204,10 +215,9 @@ const client = new MongoClient(uri);
 async function createUser(email, password, firstName, lastName, gender, city) {
   try {
     await client.connect();
-
     const doc = {
       email: email,
-      password: getEncryptedPassword(password),
+      password: password,
       firstName: firstName,
       lastName: lastName,
       gender: gender,
@@ -231,7 +241,7 @@ async function findUser(email, password) {
     var user = await client
       .db("users")
       .collection("user")
-      .findOne({ email: email, password: getEncryptedPassword(password) });
+      .findOne({ email: email});
 
     if (user) {
       console.log("user is " + user.name);
@@ -241,7 +251,7 @@ async function findUser(email, password) {
     await client.close();
   }
 }
-
+const {ObjectId} = require('mongodb');
 async function updateUser(
   uid,
   firstName,
@@ -254,8 +264,8 @@ async function updateUser(
 ) {
   try {
     await client.connect();
-
-    const filter = { uid: uid };
+    
+    const filter = { _id: ObjectId(uid) };
     console.log("attempt to update " + uid);
     const updateDoc = {
       $set: {
@@ -268,21 +278,24 @@ async function updateUser(
         address: address,
       },
     };
-    var updated = await client
+    let updated = await client
       .db("users")
       .collection("user")
       .updateOne(filter, updateDoc);
+    console.log("wait to update " + uid + " " + age);
     if (updated) {
       console.log("user was updated ");
+      return updated;
     }
-    return updated;
+    
   } finally {
     await client.close();
   }
 }
 
 async function getEncryptedPassword(password) {
-  let salt = await bcrypt.genSalt(bcryptSaltNum);
+  const salt = await bcrypt.genSalt(bcryptSaltNum);
+  console.log("using salt " + salt);
   let encryptedPassword = await bcrypt.hash(password, salt);
   console.log("password " + password + " " + encryptedPassword);
 
