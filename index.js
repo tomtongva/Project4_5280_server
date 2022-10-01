@@ -55,7 +55,7 @@ app.use(express.urlencoded());
 app.use(express.json());
 app.post("/api/auth", async (req, res) => {
   let user = await findUser(req.body.email);
-  console.log("found " + user + " " + user.password);
+  console.log("found " + user);
   
   let isValidPassword = null;
   if (user) {
