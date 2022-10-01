@@ -7,6 +7,10 @@ const headerTokenKey = "x-jwt-token";
 const bcrypt = require("bcryptjs");
 const bcryptSaltNum = 12;
 
+const fs = require("fs");
+const data = fs.readFileSync("discount.json");
+const items = JSON.parse(data);
+
 app.listen(process.env.PORT || port, () => {
   console.log(`Listening on port ${port}`);
   console.log(`${process.env.PORT}`);
