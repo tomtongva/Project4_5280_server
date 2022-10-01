@@ -284,3 +284,9 @@ async function getEncryptedPassword(password) {
 
   return encryptedPassword;
 }
+
+// Get items in discount.json
+app.get("/api/getItems", (req, res) => {
+  //can declare get our put route, first param is the route, second param is the function that is executed
+  res.send(items);
+});
