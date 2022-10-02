@@ -395,15 +395,15 @@ app.post("/checkout", (req, res) => {
   // Use payment method nonce here
 });
 
-// Create a transaction
-gateway.transaction.sale(
-  {
-    amount: "10.00",
-    paymentMethodNonce: nonceFromTheClient,
-    deviceData: deviceDataFromTheClient,
-    options: {
-      submitForSettlement: true,
-    },
-  },
-  (err, result) => {}
-);
+// // Create a transaction
+// gateway.transaction.sale(
+//   {
+//     amount: "10.00",
+//     paymentMethodNonce: nonceFromTheClient,
+//     deviceData: deviceDataFromTheClient,
+//     options: {
+//       submitForSettlement: true,
+//     },
+//   },
+//   (err, result) => {}
+// );
