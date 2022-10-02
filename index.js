@@ -11,6 +11,16 @@ const fs = require("fs");
 const data = fs.readFileSync("discount.json");
 const items = JSON.parse(data);
 
+// Braintree
+const braintree = require("braintree");
+
+const gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: "pjmgkxcczy4vtzz9",
+  publicKey: "m4zfp8kh5xvz3hng",
+  privateKey: "9e968cfd82e1c9c24fb6680bdb25b327",
+});
+
 app.listen(process.env.PORT || port, () => {
   console.log(`Listening on port ${port}`);
   console.log(`${process.env.PORT}`);
@@ -360,3 +370,40 @@ app.get("/api/getItems", (req, res) => {
   //can declare get our put route, first param is the route, second param is the function that is executed
   res.send(items);
 });
+
+// Generate a client token
+gateway.clientToken.generate(
+  {
+    customerId: aCustomerId,
+  },
+  (err, response) => {
+    // pass clientToken to your front-end
+    const clientToken = response.clientToken;
+  }
+);
+
+// Send a client token to your client
+app.get("/client_token", (req, res) => {
+  gateway.clientToken.generate({}, (err, response) => {
+    res.send(response.clientToken);
+  });
+});
+
+// Receive a payment method nonce from your client
+app.post("/checkout", (req, res) => {
+  const nonceFromTheClient = req.body.payment_method_nonce;
+  // Use payment method nonce here
+});
+
+// Create a transaction
+gateway.transaction.sale(
+  {
+    amount: "10.00",
+    paymentMethodNonce: nonceFromTheClient,
+    deviceData: deviceDataFromTheClient,
+    options: {
+      submitForSettlement: true,
+    },
+  },
+  (err, result) => {}
+);
