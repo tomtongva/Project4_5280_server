@@ -11,6 +11,16 @@ const fs = require("fs");
 const data = fs.readFileSync("discount.json");
 const items = JSON.parse(data);
 
+// Braintree
+const braintree = require("braintree");
+
+const gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: "pjmgkxcczy4vtzz9",
+  publicKey: "m4zfp8kh5xvz3hng",
+  privateKey: "9e968cfd82e1c9c24fb6680bdb25b327",
+});
+
 app.listen(process.env.PORT || port, () => {
   console.log(`Listening on port ${port}`);
   console.log(`${process.env.PORT}`);
@@ -56,7 +66,7 @@ app.use(express.json());
 app.post("/api/auth", async (req, res) => {
   let user = await findUser(req.body.email);
   console.log("found " + user);
-  
+
   let isValidPassword = null;
   if (user) {
     isValidPassword = await bcrypt.compare(req.body.password, user.password);
@@ -85,6 +95,8 @@ app.post("/api/auth", async (req, res) => {
       age: user.age,
       weight: user.weight,
       address: user.address,
+      order: user.order,
+      orderHistory: user.orderHistory,
     });
   } else {
     res.status(401).send({ error: "You're not found" });
@@ -101,7 +113,9 @@ app.post("/api/user/update", jwtValidateUserMiddleware, async (req, res) => {
     req.body.age,
     req.body.weight,
     req.body.address,
-	req.body.customerId
+    req.body.customerId,
+    req.body.order,
+    req.body.orderHistory
   );
   if (updated) {
     console.log("send successful updated response back");
@@ -114,6 +128,24 @@ app.post("/api/user/update", jwtValidateUserMiddleware, async (req, res) => {
     res.status(401).send({ error: "user update failed" });
   }
 });
+
+// app.post(
+//   "/api/user/updateCart",
+//   jwtValidateUserMiddleware,
+//   async (req, res) => {
+//     let updated = await updateUserCart(req.decodedToken.uid, req.body.order);
+//     if (updated) {
+//       console.log("send successful updated response back");
+
+//       let decodedToken = req.decodedToken;
+
+//       res.send({ message: "user updated", data: { decoded: decodedToken } });
+//     } else {
+//       console.log("send failed update response back");
+//       res.status(401).send({ error: "user update failed" });
+//     }
+//   }
+// );
 
 const emailValidator = require("deep-email-validator"); //npm install deep-email-validator, https://www.abstractapi.com/guides/node-email-validation
 async function isEmailValid(email) {
@@ -165,7 +197,7 @@ app.post("/api/signup", async (req, res) => {
   }
 
   let userId = null;
-  
+
   encryptedPassword = await getEncryptedPassword(req.body.password);
   console.log("new password: " + encryptedPassword);
 
@@ -242,7 +274,7 @@ async function findUser(email, password) {
     var user = await client
       .db("users")
       .collection("user")
-      .findOne({ email: email});
+      .findOne({ email: email });
 
     if (user) {
       console.log("user is " + user.name);
@@ -252,7 +284,7 @@ async function findUser(email, password) {
     await client.close();
   }
 }
-const {ObjectId} = require('mongodb');
+const { ObjectId } = require("mongodb");
 async function updateUser(
   uid,
   firstName,
@@ -262,11 +294,13 @@ async function updateUser(
   age,
   weight,
   address,
-  customerId
+  customerId,
+  order,
+  orderHistory
 ) {
   try {
     await client.connect();
-    
+
     const filter = { _id: ObjectId(uid) };
     console.log("attempt to update " + uid);
     const updateDoc = {
@@ -278,7 +312,9 @@ async function updateUser(
         age: age,
         weight: weight,
         address: address,
-		customerId: customerId
+        customerId: customerId,
+        order: order,
+        orderHistory: orderHistory,
       },
     };
     let updated = await client
@@ -290,11 +326,35 @@ async function updateUser(
       console.log("user was updated ");
       return updated;
     }
-    
   } finally {
     await client.close();
   }
 }
+
+// async function updateUserCart(uid, order) {
+//   try {
+//     await client.connect();
+
+//     const filter = { _id: ObjectId(uid) };
+//     console.log("attempt to update " + uid);
+//     const updateDoc = {
+//       $set: {
+//         order: order,
+//       },
+//     };
+//     let updated = await client
+//       .db("users")
+//       .collection("user")
+//       .updateOne(filter, updateDoc);
+//     console.log("wait to update " + uid + " " + age);
+//     if (updated) {
+//       console.log("user was updated ");
+//       return updated;
+//     }
+//   } finally {
+//     await client.close();
+//   }
+// }
 
 async function getEncryptedPassword(password) {
   const salt = await bcrypt.genSalt(bcryptSaltNum);
@@ -310,3 +370,35 @@ app.get("/api/getItems", (req, res) => {
   //can declare get our put route, first param is the route, second param is the function that is executed
   res.send(items);
 });
+
+// Generate a client token
+gateway.clientToken.generate({}, (err, response) => {
+  // pass clientToken to your front-end
+  const clientToken = response.clientToken;
+});
+
+// Send a client token to your client
+app.get("/client_token", (req, res) => {
+  gateway.clientToken.generate({}, (err, response) => {
+    res.send(response.clientToken);
+  });
+});
+
+// Receive a payment method nonce from your client
+app.post("/checkout", (req, res) => {
+  const nonceFromTheClient = req.body.payment_method_nonce;
+  // Use payment method nonce here
+});
+
+// // Create a transaction
+// gateway.transaction.sale(
+//   {
+//     amount: "10.00",
+//     paymentMethodNonce: nonceFromTheClient,
+//     deviceData: deviceDataFromTheClient,
+//     options: {
+//       submitForSettlement: true,
+//     },
+//   },
+//   (err, result) => {}
+// );
