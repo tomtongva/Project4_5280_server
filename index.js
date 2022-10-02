@@ -115,6 +115,24 @@ app.post("/api/user/update", jwtValidateUserMiddleware, async (req, res) => {
   }
 });
 
+app.post(
+  "/api/user/updateCart",
+  jwtValidateUserMiddleware,
+  async (req, res) => {
+    let updated = await updateUserCart(req.body.order);
+    if (updated) {
+      console.log("send successful updated response back");
+
+      let decodedToken = req.decodedToken;
+
+      res.send({ message: "user updated", data: { decoded: decodedToken } });
+    } else {
+      console.log("send failed update response back");
+      res.status(401).send({ error: "user update failed" });
+    }
+  }
+);
+
 const emailValidator = require("deep-email-validator"); //npm install deep-email-validator, https://www.abstractapi.com/guides/node-email-validation
 async function isEmailValid(email) {
   return emailValidator.validate(email);
