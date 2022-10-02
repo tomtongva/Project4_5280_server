@@ -115,23 +115,23 @@ app.post("/api/user/update", jwtValidateUserMiddleware, async (req, res) => {
   }
 });
 
-app.post(
-  "/api/user/updateCart",
-  jwtValidateUserMiddleware,
-  async (req, res) => {
-    let updated = await updateUserCart(req.decodedToken.uid, req.body.order);
-    if (updated) {
-      console.log("send successful updated response back");
+// app.post(
+//   "/api/user/updateCart",
+//   jwtValidateUserMiddleware,
+//   async (req, res) => {
+//     let updated = await updateUserCart(req.decodedToken.uid, req.body.order);
+//     if (updated) {
+//       console.log("send successful updated response back");
 
-      let decodedToken = req.decodedToken;
+//       let decodedToken = req.decodedToken;
 
-      res.send({ message: "user updated", data: { decoded: decodedToken } });
-    } else {
-      console.log("send failed update response back");
-      res.status(401).send({ error: "user update failed" });
-    }
-  }
-);
+//       res.send({ message: "user updated", data: { decoded: decodedToken } });
+//     } else {
+//       console.log("send failed update response back");
+//       res.status(401).send({ error: "user update failed" });
+//     }
+//   }
+// );
 
 const emailValidator = require("deep-email-validator"); //npm install deep-email-validator, https://www.abstractapi.com/guides/node-email-validation
 async function isEmailValid(email) {
@@ -313,30 +313,30 @@ async function updateUser(
   }
 }
 
-async function updateUserCart(uid, order) {
-  try {
-    await client.connect();
+// async function updateUserCart(uid, order) {
+//   try {
+//     await client.connect();
 
-    const filter = { _id: ObjectId(uid) };
-    console.log("attempt to update " + uid);
-    const updateDoc = {
-      $set: {
-        order: order,
-      },
-    };
-    let updated = await client
-      .db("users")
-      .collection("user")
-      .updateOne(filter, updateDoc);
-    console.log("wait to update " + uid + " " + age);
-    if (updated) {
-      console.log("user was updated ");
-      return updated;
-    }
-  } finally {
-    await client.close();
-  }
-}
+//     const filter = { _id: ObjectId(uid) };
+//     console.log("attempt to update " + uid);
+//     const updateDoc = {
+//       $set: {
+//         order: order,
+//       },
+//     };
+//     let updated = await client
+//       .db("users")
+//       .collection("user")
+//       .updateOne(filter, updateDoc);
+//     console.log("wait to update " + uid + " " + age);
+//     if (updated) {
+//       console.log("user was updated ");
+//       return updated;
+//     }
+//   } finally {
+//     await client.close();
+//   }
+// }
 
 async function getEncryptedPassword(password) {
   const salt = await bcrypt.genSalt(bcryptSaltNum);
