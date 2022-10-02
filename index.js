@@ -85,6 +85,8 @@ app.post("/api/auth", async (req, res) => {
       age: user.age,
       weight: user.weight,
       address: user.address,
+      order: user.order,
+      orderHistory: user.orderHistory,
     });
   } else {
     res.status(401).send({ error: "You're not found" });
