@@ -55,8 +55,7 @@ app.use(express.urlencoded());
 app.use(express.json());
 app.post("/api/auth", async (req, res) => {
   let user = await findUser(req.body.email);
-  console.log("found " + user + " " + user.password);
-
+  console.log("found " + user);
   let isValidPassword = null;
   if (user) {
     isValidPassword = await bcrypt.compare(req.body.password, user.password);
@@ -102,7 +101,7 @@ app.post("/api/user/update", jwtValidateUserMiddleware, async (req, res) => {
     req.body.age,
     req.body.weight,
     req.body.address,
-    req.body.order
+	  req.body.customerId
   );
   if (updated) {
     console.log("send successful updated response back");
@@ -263,7 +262,7 @@ async function updateUser(
   age,
   weight,
   address,
-  order
+  customerId
 ) {
   try {
     await client.connect();
@@ -279,7 +278,7 @@ async function updateUser(
         age: age,
         weight: weight,
         address: address,
-        order: order,
+        customerId: customerId
       },
     };
     let updated = await client
