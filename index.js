@@ -101,7 +101,9 @@ app.post("/api/user/update", jwtValidateUserMiddleware, async (req, res) => {
     req.body.age,
     req.body.weight,
     req.body.address,
-    req.body.customerId
+    req.body.customerId,
+    req.body.order,
+    req.body.orderHistory
   );
   if (updated) {
     console.log("send successful updated response back");
@@ -280,7 +282,9 @@ async function updateUser(
   age,
   weight,
   address,
-  customerId
+  customerId,
+  order,
+  orderHistory
 ) {
   try {
     await client.connect();
@@ -297,6 +301,8 @@ async function updateUser(
         weight: weight,
         address: address,
         customerId: customerId,
+        order: order,
+        orderHistory: orderHistory,
       },
     };
     let updated = await client
