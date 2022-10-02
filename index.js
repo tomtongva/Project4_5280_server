@@ -372,24 +372,16 @@ app.get("/api/getItems", (req, res) => {
 });
 
 // Generate a client token
-gateway.clientToken.generate(
-  {
-    customerId: aCustomerId,
-  },
-  (err, response) => {
-    // pass clientToken to your front-end
-    const clientToken = response.clientToken;
-  }
-);
+gateway.clientToken.generate({}, (err, response) => {
+  // pass clientToken to your front-end
+  const clientToken = response.clientToken;
+});
 
 // Send a client token to your client
 app.get("/client_token", (req, res) => {
-  gateway.clientToken.generate(
-    { customerId: req.body.customerId },
-    (err, response) => {
-      res.send(response.clientToken);
-    }
-  );
+  gateway.clientToken.generate({}, (err, response) => {
+    res.send(response.clientToken);
+  });
 });
 
 // Receive a payment method nonce from your client
