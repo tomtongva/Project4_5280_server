@@ -119,7 +119,7 @@ app.post(
   "/api/user/updateCart",
   jwtValidateUserMiddleware,
   async (req, res) => {
-    let updated = await updateUserCart(req.body.order);
+    let updated = await updateUserCart(req.decodedToken.uid, req.body.order);
     if (updated) {
       console.log("send successful updated response back");
 
@@ -313,7 +313,7 @@ async function updateUser(
   }
 }
 
-async function updateUserCart(order) {
+async function updateUserCart(uid, order) {
   try {
     await client.connect();
 
