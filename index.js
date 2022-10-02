@@ -241,7 +241,7 @@ const { MongoClient } = require("mongodb");
 // Connection URI
 const uri =
   "mongodb+srv://group35280:uncc2022@cluster0.rts9eht.mongodb.net/test";
-//"mongodb://localhost:27017/?maxPoolSize=20&w=majority";
+// "mongodb://localhost:27017/?maxPoolSize=20&w=majority";
 // Create a new MongoClient
 const client = new MongoClient(uri);
 
@@ -402,3 +402,26 @@ app.post("/checkout", (req, res) => {
 //   },
 //   (err, result) => {}
 // );
+
+// restarting of app, find user by email if token is valid
+app.post("/api/user/find", jwtValidateUserMiddleware, async (req, res) => {
+  console.log("find user by email after token validated " + req.body.email);
+
+  let user = await findUser(req.body.email);
+  console.log("found " + user);
+
+  res.send({
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    gender: user.gender,
+    city: user.city,
+    token: req.header(headerTokenKey),
+    age: user.age,
+    weight: user.weight,
+    address: user.address,
+    order: user.order,
+    orderHistory: user.orderHistory,
+  });
+
+});
