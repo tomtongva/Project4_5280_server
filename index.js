@@ -56,6 +56,7 @@ app.use(express.json());
 app.post("/api/auth", async (req, res) => {
   let user = await findUser(req.body.email);
   console.log("found " + user);
+
   let isValidPassword = null;
   if (user) {
     isValidPassword = await bcrypt.compare(req.body.password, user.password);
@@ -84,7 +85,6 @@ app.post("/api/auth", async (req, res) => {
       age: user.age,
       weight: user.weight,
       address: user.address,
-      order: user.order,
     });
   } else {
     res.status(401).send({ error: "You're not found" });
@@ -253,7 +253,6 @@ async function findUser(email, password) {
   }
 }
 const { ObjectId } = require("mongodb");
-
 async function updateUser(
   uid,
   firstName,
@@ -296,39 +295,6 @@ async function updateUser(
   }
 }
 
-async function getEncryptedPassword(password) {
-  const salt = await bcrypt.genSalt(bcryptSaltNum);
-  console.log("using salt " + salt);
-  let encryptedPassword = await bcrypt.hash(password, salt);
-  console.log("password " + password + " " + encryptedPassword);
-
-  return encryptedPassword;
-}
-
-// Get items in discount.json
-app.get("/api/getItems", (req, res) => {
-  //can declare get our put route, first param is the route, second param is the function that is executed
-  res.send(items);
-});
-
-app.post(
-  "/api/user/updateCart",
-  jwtValidateUserMiddleware,
-  async (req, res) => {
-    let updated = await updateUserCart(req.body.order);
-    if (updated) {
-      console.log("send successful updated response back");
-
-      let decodedToken = req.decodedToken;
-
-      res.send({ message: "user updated", data: { decoded: decodedToken } });
-    } else {
-      console.log("send failed update response back");
-      res.status(401).send({ error: "user update failed" });
-    }
-  }
-);
-
 async function updateUserCart(order) {
   try {
     await client.connect();
@@ -353,3 +319,18 @@ async function updateUserCart(order) {
     await client.close();
   }
 }
+
+async function getEncryptedPassword(password) {
+  const salt = await bcrypt.genSalt(bcryptSaltNum);
+  console.log("using salt " + salt);
+  let encryptedPassword = await bcrypt.hash(password, salt);
+  console.log("password " + password + " " + encryptedPassword);
+
+  return encryptedPassword;
+}
+
+// Get items in discount.json
+app.get("/api/getItems", (req, res) => {
+  //can declare get our put route, first param is the route, second param is the function that is executed
+  res.send(items);
+});
