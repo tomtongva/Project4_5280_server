@@ -101,7 +101,7 @@ app.post("/api/user/update", jwtValidateUserMiddleware, async (req, res) => {
     req.body.age,
     req.body.weight,
     req.body.address,
-	  req.body.customerId
+    req.body.customerId
   );
   if (updated) {
     console.log("send successful updated response back");
@@ -253,6 +253,7 @@ async function findUser(email, password) {
   }
 }
 const { ObjectId } = require("mongodb");
+
 async function updateUser(
   uid,
   firstName,
@@ -278,32 +279,7 @@ async function updateUser(
         age: age,
         weight: weight,
         address: address,
-        customerId: customerId
-      },
-    };
-    let updated = await client
-      .db("users")
-      .collection("user")
-      .updateOne(filter, updateDoc);
-    console.log("wait to update " + uid + " " + age);
-    if (updated) {
-      console.log("user was updated ");
-      return updated;
-    }
-  } finally {
-    await client.close();
-  }
-}
-
-async function updateUserCart(order) {
-  try {
-    await client.connect();
-
-    const filter = { _id: ObjectId(uid) };
-    console.log("attempt to update " + uid);
-    const updateDoc = {
-      $set: {
-        order: order,
+        customerId: customerId,
       },
     };
     let updated = await client
@@ -334,3 +310,46 @@ app.get("/api/getItems", (req, res) => {
   //can declare get our put route, first param is the route, second param is the function that is executed
   res.send(items);
 });
+
+app.post(
+  "/api/user/updateCart",
+  jwtValidateUserMiddleware,
+  async (req, res) => {
+    let updated = await updateUserCart(req.body.order);
+    if (updated) {
+      console.log("send successful updated response back");
+
+      let decodedToken = req.decodedToken;
+
+      res.send({ message: "user updated", data: { decoded: decodedToken } });
+    } else {
+      console.log("send failed update response back");
+      res.status(401).send({ error: "user update failed" });
+    }
+  }
+);
+
+async function updateUserCart(order) {
+  try {
+    await client.connect();
+
+    const filter = { _id: ObjectId(uid) };
+    console.log("attempt to update " + uid);
+    const updateDoc = {
+      $set: {
+        order: order,
+      },
+    };
+    let updated = await client
+      .db("users")
+      .collection("user")
+      .updateOne(filter, updateDoc);
+    console.log("wait to update " + uid + " " + age);
+    if (updated) {
+      console.log("user was updated ");
+      return updated;
+    }
+  } finally {
+    await client.close();
+  }
+}
