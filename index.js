@@ -56,7 +56,6 @@ app.use(express.json());
 app.post("/api/auth", async (req, res) => {
   let user = await findUser(req.body.email);
   console.log("found " + user);
-  
   let isValidPassword = null;
   if (user) {
     isValidPassword = await bcrypt.compare(req.body.password, user.password);
@@ -85,6 +84,7 @@ app.post("/api/auth", async (req, res) => {
       age: user.age,
       weight: user.weight,
       address: user.address,
+      order: user.order,
     });
   } else {
     res.status(401).send({ error: "You're not found" });
@@ -101,7 +101,7 @@ app.post("/api/user/update", jwtValidateUserMiddleware, async (req, res) => {
     req.body.age,
     req.body.weight,
     req.body.address,
-	req.body.customerId
+	  req.body.customerId
   );
   if (updated) {
     console.log("send successful updated response back");
@@ -165,7 +165,7 @@ app.post("/api/signup", async (req, res) => {
   }
 
   let userId = null;
-  
+
   encryptedPassword = await getEncryptedPassword(req.body.password);
   console.log("new password: " + encryptedPassword);
 
@@ -242,7 +242,7 @@ async function findUser(email, password) {
     var user = await client
       .db("users")
       .collection("user")
-      .findOne({ email: email});
+      .findOne({ email: email });
 
     if (user) {
       console.log("user is " + user.name);
@@ -252,7 +252,7 @@ async function findUser(email, password) {
     await client.close();
   }
 }
-const {ObjectId} = require('mongodb');
+const { ObjectId } = require("mongodb");
 async function updateUser(
   uid,
   firstName,
@@ -266,7 +266,7 @@ async function updateUser(
 ) {
   try {
     await client.connect();
-    
+
     const filter = { _id: ObjectId(uid) };
     console.log("attempt to update " + uid);
     const updateDoc = {
@@ -278,7 +278,7 @@ async function updateUser(
         age: age,
         weight: weight,
         address: address,
-		customerId: customerId
+        customerId: customerId
       },
     };
     let updated = await client
@@ -290,7 +290,31 @@ async function updateUser(
       console.log("user was updated ");
       return updated;
     }
-    
+  } finally {
+    await client.close();
+  }
+}
+
+async function updateUserCart(order) {
+  try {
+    await client.connect();
+
+    const filter = { _id: ObjectId(uid) };
+    console.log("attempt to update " + uid);
+    const updateDoc = {
+      $set: {
+        order: order,
+      },
+    };
+    let updated = await client
+      .db("users")
+      .collection("user")
+      .updateOne(filter, updateDoc);
+    console.log("wait to update " + uid + " " + age);
+    if (updated) {
+      console.log("user was updated ");
+      return updated;
+    }
   } finally {
     await client.close();
   }
