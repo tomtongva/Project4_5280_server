@@ -385,7 +385,7 @@ gateway.clientToken.generate(
 // Send a client token to your client
 app.get("/client_token", (req, res) => {
   gateway.clientToken.generate(
-    { customerId: req.customerId },
+    { customerId: req.body.customerId },
     (err, response) => {
       res.send(response.clientToken);
     }
