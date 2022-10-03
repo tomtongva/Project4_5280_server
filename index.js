@@ -216,7 +216,7 @@ app.post("/api/signup", async (req, res) => {
     return;
   }
 
-  const customer = gateway.customer.create(
+  gateway.customer.create(
     {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -224,22 +224,19 @@ app.post("/api/signup", async (req, res) => {
     },
     (err, result) => {
       result.success;
-      result.customer.id;
+
+      res.send({
+        message: "You're registered ",
+        id: userId,
+        email: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        gender: req.body.gender,
+        city: req.body.city,
+        customerId: result.customer.id,
+      });
     }
   );
-
-  const id = (await customer).customer.id;
-
-  res.send({
-    message: "You're registered ",
-    id: userId,
-    email: req.body.email,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    gender: req.body.gender,
-    city: req.body.city,
-    customerId: id,
-  });
 });
 
 app.post(
