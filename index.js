@@ -216,19 +216,19 @@ app.post("/api/signup", async (req, res) => {
     return;
   }
 
-  var customerId;
-
-  gateway.customer.create(
+  const customer = gateway.customer.create(
     {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
     },
     (err, result) => {
       result.success;
-      customerId = result.customerId;
+      customerId = result.customer.id;
     }
   );
+
+  const id = (await customer).customer.id;
 
   res.send({
     message: "You're registered ",
@@ -238,7 +238,6 @@ app.post("/api/signup", async (req, res) => {
     lastName: req.body.lastName,
     gender: req.body.gender,
     city: req.body.city,
-    customerId: customerId,
   });
 });
 
@@ -415,3 +414,19 @@ app.post("/api/user/find", jwtValidateUserMiddleware, async (req, res) => {
     orderHistory: user.orderHistory,
   });
 });
+
+async function findUser(firstName, lastName, email) {
+  const customer = gateway.customer.create(
+    {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+    },
+    (err, result) => {
+      result.success;
+      customerId = result.customer.id;
+    }
+  );
+
+  const id = (await customer).customer.id;
+}
