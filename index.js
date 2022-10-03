@@ -384,18 +384,18 @@ app.get("/api/getItems", (req, res) => {
   res.send(items);
 });
 
-// Braintree create customer
-gateway.customer.create(
-  {
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-  },
-  (err, result) => {
-    result.success;
-    result.customer.id;
-  }
-);
+// // Braintree create customer
+// gateway.customer.create(
+//   {
+//     firstName,
+//     lastName,
+//     email,
+//   },
+//   (err, result) => {
+//     result.success;
+//     result.customer.id;
+//   }
+// );
 
 // Generate a client token
 gateway.clientToken.generate({}, (err, response) => {
