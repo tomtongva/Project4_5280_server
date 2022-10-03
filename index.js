@@ -201,6 +201,18 @@ app.post("/api/signup", async (req, res) => {
   encryptedPassword = await getEncryptedPassword(req.body.password);
   console.log("new password: " + encryptedPassword);
 
+  gateway.customer.create(
+    {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+    },
+    (err, result) => {
+      res.send(result.success);
+      res.send(result.customer.id);
+    }
+  );
+
   try {
     userId = await createUser(
       req.body.email,
@@ -284,6 +296,7 @@ async function findUser(email, password) {
     await client.close();
   }
 }
+
 const { ObjectId } = require("mongodb");
 async function updateUser(
   uid,
@@ -371,6 +384,19 @@ app.get("/api/getItems", (req, res) => {
   res.send(items);
 });
 
+// Braintree create customer
+gateway.customer.create(
+  {
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+  },
+  (err, result) => {
+    result.success;
+    result.customer.id;
+  }
+);
+
 // Generate a client token
 gateway.clientToken.generate({}, (err, response) => {
   // pass clientToken to your front-end
@@ -423,5 +449,4 @@ app.post("/api/user/find", jwtValidateUserMiddleware, async (req, res) => {
     order: user.order,
     orderHistory: user.orderHistory,
   });
-
 });
