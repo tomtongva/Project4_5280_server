@@ -201,18 +201,6 @@ app.post("/api/signup", async (req, res) => {
   encryptedPassword = await getEncryptedPassword(req.body.password);
   console.log("new password: " + encryptedPassword);
 
-  gateway.customer.create(
-    {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-    },
-    (err, result) => {
-      res.send(result.success);
-      res.send(result.customer.id);
-    }
-  );
-
   try {
     userId = await createUser(
       req.body.email,
@@ -228,6 +216,20 @@ app.post("/api/signup", async (req, res) => {
     return;
   }
 
+  var customerId;
+
+  gateway.customer.create(
+    {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+    },
+    (err, result) => {
+      result.success;
+      customerId = result.customerId;
+    }
+  );
+
   res.send({
     message: "You're registered ",
     id: userId,
@@ -236,6 +238,7 @@ app.post("/api/signup", async (req, res) => {
     lastName: req.body.lastName,
     gender: req.body.gender,
     city: req.body.city,
+    customerId: customerId,
   });
 });
 
@@ -344,31 +347,6 @@ async function updateUser(
   }
 }
 
-// async function updateUserCart(uid, order) {
-//   try {
-//     await client.connect();
-
-//     const filter = { _id: ObjectId(uid) };
-//     console.log("attempt to update " + uid);
-//     const updateDoc = {
-//       $set: {
-//         order: order,
-//       },
-//     };
-//     let updated = await client
-//       .db("users")
-//       .collection("user")
-//       .updateOne(filter, updateDoc);
-//     console.log("wait to update " + uid + " " + age);
-//     if (updated) {
-//       console.log("user was updated ");
-//       return updated;
-//     }
-//   } finally {
-//     await client.close();
-//   }
-// }
-
 async function getEncryptedPassword(password) {
   const salt = await bcrypt.genSalt(bcryptSaltNum);
   console.log("using salt " + salt);
@@ -383,19 +361,6 @@ app.get("/api/getItems", (req, res) => {
   //can declare get our put route, first param is the route, second param is the function that is executed
   res.send(items);
 });
-
-// // Braintree create customer
-// gateway.customer.create(
-//   {
-//     firstName,
-//     lastName,
-//     email,
-//   },
-//   (err, result) => {
-//     result.success;
-//     result.customer.id;
-//   }
-// );
 
 // Generate a client token
 gateway.clientToken.generate({}, (err, response) => {
