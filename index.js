@@ -218,13 +218,13 @@ app.post("/api/signup", async (req, res) => {
 
   const customer = gateway.customer.create(
     {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
     },
     (err, result) => {
       result.success;
-      customerId = result.customer.id;
+      result.customer.id;
     }
   );
 
@@ -238,6 +238,7 @@ app.post("/api/signup", async (req, res) => {
     lastName: req.body.lastName,
     gender: req.body.gender,
     city: req.body.city,
+    customerId: id,
   });
 });
 
@@ -415,18 +416,18 @@ app.post("/api/user/find", jwtValidateUserMiddleware, async (req, res) => {
   });
 });
 
-async function findUser(firstName, lastName, email) {
-  const customer = gateway.customer.create(
-    {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-    },
-    (err, result) => {
-      result.success;
-      customerId = result.customer.id;
-    }
-  );
+// async function findUser(firstName, lastName, email) {
+//   const customer = gateway.customer.create(
+//     {
+//       firstName: firstName,
+//       lastName: lastName,
+//       email: email,
+//     },
+//     (err, result) => {
+//       result.success;
+//       customerId = result.customer.id;
+//     }
+//   );
 
-  const id = (await customer).customer.id;
-}
+//   const id = (await customer).customer.id;
+// }
