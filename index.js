@@ -97,6 +97,7 @@ app.post("/api/auth", async (req, res) => {
       address: user.address,
       order: user.order,
       orderHistory: user.orderHistory,
+      customerId: user.customerId,
     });
   } else {
     res.status(401).send({ error: "You're not found" });
