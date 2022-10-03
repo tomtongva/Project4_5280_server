@@ -420,6 +420,7 @@ app.post("/api/user/find", jwtValidateUserMiddleware, async (req, res) => {
     address: user.address,
     order: user.order,
     orderHistory: user.orderHistory,
+    customerId: user.customerId,
   });
 });
 
