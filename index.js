@@ -216,7 +216,7 @@ app.post("/api/signup", async (req, res) => {
     return;
   }
 
-  var customerID;
+  var customerId;
 
   gateway.customer.create(
     {
@@ -226,7 +226,7 @@ app.post("/api/signup", async (req, res) => {
     },
     (err, result) => {
       result.success;
-      customerID = result.customerId;
+      customerId = result.customerId;
     }
   );
 
@@ -238,7 +238,7 @@ app.post("/api/signup", async (req, res) => {
     lastName: req.body.lastName,
     gender: req.body.gender,
     city: req.body.city,
-    customerID: customerID,
+    customerId: customerId,
   });
 });
 
