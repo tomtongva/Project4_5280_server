@@ -201,29 +201,30 @@ app.post("/api/signup", async (req, res) => {
   encryptedPassword = await getEncryptedPassword(req.body.password);
   console.log("new password: " + encryptedPassword);
 
-  try {
-    userId = await createUser(
-      req.body.email,
-      encryptedPassword,
-      req.body.firstName,
-      req.body.lastName,
-      req.body.gender,
-      req.body.city
-    );
-  } catch (exception) {
-    console.log(exception);
-    res.status(401).send({ error: "Unable to register at this time " });
-    return;
-  }
-
   gateway.customer.create(
     {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
     },
-    (err, result) => {
+    async (err, result) => {
       result.success;
+
+      try {
+        userId = await createUser(
+          req.body.email,
+          encryptedPassword,
+          req.body.firstName,
+          req.body.lastName,
+          req.body.gender,
+          req.body.city,
+          result.customer.id
+        );
+      } catch (exception) {
+        console.log(exception);
+        res.status(401).send({ error: "Unable to register at this time " });
+        return;
+      }
 
       res.send({
         message: "You're registered ",
@@ -257,7 +258,15 @@ const uri =
 // Create a new MongoClient
 const client = new MongoClient(uri);
 
-async function createUser(email, password, firstName, lastName, gender, city) {
+async function createUser(
+  email,
+  password,
+  firstName,
+  lastName,
+  gender,
+  city,
+  customerId
+) {
   try {
     await client.connect();
     const doc = {
@@ -267,6 +276,7 @@ async function createUser(email, password, firstName, lastName, gender, city) {
       lastName: lastName,
       gender: gender,
       city: city,
+      customerId: customerId,
     };
     const result = await client.db("users").collection("user").insertOne(doc);
     if (result) {
