@@ -384,12 +384,13 @@ app.get("/client_token", (req, res) => {
 
 // Receive a payment method nonce from your client
 app.post("/checkout", (req, res) => {
-  const nonceFromTheClient = req.body.payment_method_nonce;
+  const nonceFromTheClient = req.body.paymentMethodNonce;
+  const amount = req.body.amount;
   // Use payment method nonce here
 
   gateway.transaction.sale(
     {
-      amount: req.body.totalCost,
+      amount: amount,
       paymentMethodNonce: nonceFromTheClient,
       options: {
         submitForSettlement: true,
