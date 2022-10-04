@@ -396,7 +396,17 @@ app.post("/checkout", jwtValidateUserMiddleware, (req, res) => {
         submitForSettlement: true,
       },
     },
-    (err, result) => {}
+    (err, result) => {
+      if (result.success) {
+        res.send({
+          message: "Success",
+        });
+      } else {
+        res.send({
+          message: "Fail",
+        });
+      }
+    }
   );
 });
 
