@@ -386,20 +386,18 @@ app.get("/client_token", (req, res) => {
 app.post("/checkout", (req, res) => {
   const nonceFromTheClient = req.body.payment_method_nonce;
   // Use payment method nonce here
-});
 
-// // Create a transaction
-// gateway.transaction.sale(
-//   {
-//     amount: "10.00",
-//     paymentMethodNonce: nonceFromTheClient,
-//     deviceData: deviceDataFromTheClient,
-//     options: {
-//       submitForSettlement: true,
-//     },
-//   },
-//   (err, result) => {}
-// );
+  gateway.transaction.sale(
+    {
+      amount: req.body.totalCost,
+      paymentMethodNonce: nonceFromTheClient,
+      options: {
+        submitForSettlement: true,
+      },
+    },
+    (err, result) => {}
+  );
+});
 
 // restarting of app, find user by email if token is valid
 app.post("/api/user/find", jwtValidateUserMiddleware, async (req, res) => {
