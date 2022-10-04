@@ -379,7 +379,9 @@ gateway.clientToken.generate({}, (err, response) => {
 // Send a client token to your client
 app.get("/client_token", (req, res) => {
   gateway.clientToken.generate({}, (err, response) => {
-    res.send(response.clientToken);
+    res.send({
+      token: response.clientToken,
+    });
   });
 });
 
