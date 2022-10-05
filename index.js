@@ -292,6 +292,20 @@ async function createUser(
   }
 }
 
+async function createReceipt(receipt) {
+  try {
+    await client.connect();
+    const doc = receipt;
+    const result = await client.db("transactions").collection("receipts").insertOne(doc);
+    if (result) {
+      console.log("receipt created with id " + result.insertedId);
+      return result.insertedId;
+    }
+  } finally {
+    await client.close();
+  }
+}
+
 async function findUser(email, password) {
   try {
     console.log("findUser connect to db start");
@@ -312,6 +326,7 @@ async function findUser(email, password) {
 }
 
 const { ObjectId } = require("mongodb");
+const { create } = require("domain");
 async function updateUser(
   uid,
   firstName,
@@ -415,12 +430,13 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
               submitForSettlement: true,
             },
           },
-          (err, result) => {
+          async (err, result) => {
             console.info("Result from transaction sale")
             // console.info(result)
             console.info(result.transaction.paymentReceipt)
             // console.info(result.transaction)
             if (result.success) {
+              await createReceipt(result.transaction.paymentReceipt)
               res.send({
                 message: "Success",
               });
