@@ -392,6 +392,7 @@ app.post("/checkout", jwtValidateUserMiddleware, (req, res) => {
     {
       amount: amount,
       paymentMethodNonce: nonceFromTheClient,
+      customerId: 622057185,
       options: {
         submitForSettlement: true,
       },
