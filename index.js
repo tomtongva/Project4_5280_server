@@ -78,6 +78,8 @@ app.post("/api/auth", async (req, res) => {
       {
         uid: user._id,
         name: user.firstName + " " + user.lastName,
+        email: user.email,
+        customerId: user.customerId,
         exp: Math.floor(Date.now() / 1000) + 60 * 20,
         currentTime: Date.now(),
       },
