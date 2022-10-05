@@ -292,10 +292,21 @@ async function createUser(
   }
 }
 
-async function createReceipt(receipt) {
+async function createReceipt(receipt, order, JWT) {
+
+  let payload = jwt.decode(JWT)
+  let user = {
+    email: payload.email,
+    name: payload.name,
+    customerId: payload.customerId
+  }
   try {
     await client.connect();
-    const doc = receipt;
+    const doc = {
+      receipt: receipt,
+      order: order,
+      user: user
+    };
     const result = await client.db("transactions").collection("receipts").insertOne(doc);
     if (result) {
       console.log("receipt created with id " + result.insertedId);
@@ -390,9 +401,7 @@ app.get("/api/getItems", (req, res) => {
 
 // Send a client token to your client
 app.get("/client_token", jwtValidateUserMiddleware, (req, res) => {
-  console.info(req.headers)
-  console.info(req.headers['x-jwt-token'])
-  let customerId = jwt.decode(req.headers['x-jwt-token']).customerId
+  let customerId = jwt.decode(req.header(headerTokenKey)).customerId
   gateway.clientToken.generate(
     { customerId: customerId },
     (err, response) => {
@@ -409,6 +418,7 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
   const nonceFromTheClient = req.body.paymentMethodNonce;
   const amount = req.body.amount;
   const customerId = req.body.customerId;
+  const order = req.body.order;
   // Use payment method nonce here
   await gateway.paymentMethod.create(
     {
@@ -436,7 +446,7 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
             console.info(result.transaction.paymentReceipt)
             // console.info(result.transaction)
             if (result.success) {
-              await createReceipt(result.transaction.paymentReceipt)
+              await createReceipt(result.transaction.paymentReceipt, order, req.header(headerTokenKey))
               res.send({
                 message: "Success",
               });
