@@ -407,6 +407,9 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
     (err, result) => {
       console.info("Result from paymentmethod create")
       console.info(result)
+      console.info(result.token)
+      console.info(result.paymentMethod.token)
+
     }
   );
 
