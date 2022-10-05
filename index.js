@@ -389,11 +389,24 @@ app.get("/client_token", jwtValidateUserMiddleware, (req, res) => {
 });
 
 // Receive a payment method nonce from your client
-app.post("/checkout", jwtValidateUserMiddleware, (req, res) => {
+app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
   const nonceFromTheClient = req.body.paymentMethodNonce;
   const amount = req.body.amount;
   const customerId = req.body.customerId;
   // Use payment method nonce here
+  await gateway.paymentMethod.create(
+    {
+      paymentMethodNonce: nonceFromTheClient,
+      customerId: customerId,
+      options: {
+        failOnDuplicatePaymentMethod: true,
+        verifyCard: true
+      }
+    },
+    (err, result) => {
+      console.info(result)
+    }
+  );
 
   gateway.transaction.sale(
     {
@@ -403,31 +416,6 @@ app.post("/checkout", jwtValidateUserMiddleware, (req, res) => {
       options: {
         submitForSettlement: true,
       },
-    },
-    (err, result) => {
-      if (result.success) {
-        res.send({
-          message: "Success",
-        });
-      } else {
-        res.send({
-          message: "Fail",
-        });
-      }
-    }
-  );
-});
-
-// Receive a payment method nonce from your client
-app.post("/addPaymentMethod", jwtValidateUserMiddleware, (req, res) => {
-  const nonceFromTheClient = req.body.paymentMethodNonce;
-  const customerId = req.body.customerId;
-  // Use payment method nonce here
-
-  gateway.paymentMethod.create(
-    {
-      paymentMethodNonce: nonceFromTheClient,
-      customerId: customerId
     },
     (err, result) => {
       if (result.success) {
