@@ -405,6 +405,8 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
       }
     },
     (err, result) => {
+      console.info("Result from paymentmethod create")
+      console.info(result)
     }
   );
 
@@ -418,6 +420,7 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
       },
     },
     (err, result) => {
+      console.info("Result from transaction sale")
       console.info(result)
       if (result.success) {
         res.send({
