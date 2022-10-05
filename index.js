@@ -405,7 +405,6 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
       }
     },
     (err, result) => {
-      console.info(result)
     }
   );
 
@@ -419,6 +418,7 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
       },
     },
     (err, result) => {
+      console.info(result)
       if (result.success) {
         res.send({
           message: "Success",
