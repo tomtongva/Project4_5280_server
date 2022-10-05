@@ -78,12 +78,15 @@ app.post("/api/auth", async (req, res) => {
       {
         uid: user._id,
         name: user.firstName + " " + user.lastName,
-        exp: Math.floor(Date.now() / 1000) + 60 * 20,
+        email: user.email,
+        customerId: user.customerId,
+        exp: Math.floor(Date.now() / 1000) + 3600,
         currentTime: Date.now(),
       },
       jwtSecret
     );
     console.log("generating token for " + user.firstName);
+    console.log("Generated Token: " + token);
 
     res.send({
       email: user.email,
@@ -289,6 +292,31 @@ async function createUser(
   }
 }
 
+async function createReceipt(receipt, order, JWT) {
+
+  let payload = jwt.decode(JWT)
+  let user = {
+    email: payload.email,
+    name: payload.name,
+    customerId: payload.customerId
+  }
+  try {
+    await client.connect();
+    const doc = {
+      receipt: receipt,
+      order: order,
+      user: user
+    };
+    const result = await client.db("transactions").collection("receipts").insertOne(doc);
+    if (result) {
+      console.log("receipt created with id " + result.insertedId);
+      return result.insertedId;
+    }
+  } finally {
+    await client.close();
+  }
+}
+
 async function findUser(email, password) {
   try {
     console.log("findUser connect to db start");
@@ -309,6 +337,7 @@ async function findUser(email, password) {
 }
 
 const { ObjectId } = require("mongodb");
+const { create } = require("domain");
 async function updateUser(
   uid,
   firstName,
@@ -371,10 +400,12 @@ app.get("/api/getItems", (req, res) => {
 });
 
 // Send a client token to your client
-app.get("/client_token", (req, res) => {
+app.get("/client_token", jwtValidateUserMiddleware, (req, res) => {
+  let customerId = jwt.decode(req.header(headerTokenKey)).customerId
   gateway.clientToken.generate(
-    { customerId: req.body.customerId },
+    { customerId: customerId },
     (err, response) => {
+      console.info(response.clientToken)
       res.send({
         token: response.clientToken,
       });
@@ -383,31 +414,59 @@ app.get("/client_token", (req, res) => {
 });
 
 // Receive a payment method nonce from your client
-app.post("/checkout", jwtValidateUserMiddleware, (req, res) => {
+app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
   const nonceFromTheClient = req.body.paymentMethodNonce;
   const amount = req.body.amount;
+  const customerId = req.body.customerId;
+  const order = req.body.order;
+  console.info('This is the order')
+  console.info(order)
   // Use payment method nonce here
-
-  gateway.transaction.sale(
+  await gateway.paymentMethod.create(
     {
-      amount: amount,
       paymentMethodNonce: nonceFromTheClient,
+      customerId: customerId,
       options: {
-        submitForSettlement: true,
-      },
+        failOnDuplicatePaymentMethod: true,
+        verifyCard: true
+      }
     },
     (err, result) => {
-      if (result.success) {
-        res.send({
-          message: "Success",
-        });
+      if(result.success) {
+        gateway.transaction.sale(
+          {
+            amount: amount,
+            paymentMethodToken: result.paymentMethod.token,
+            customerId: customerId,
+            options: {
+              submitForSettlement: true,
+            },
+          },
+          async (err, result) => {
+            console.info("Result from transaction sale")
+            // console.info(result)
+            console.info(result.transaction.paymentReceipt)
+            // console.info(result.transaction)
+            if (result.success) {
+              await createReceipt(result.transaction.paymentReceipt, order, req.header(headerTokenKey))
+              res.send({
+                message: "Success",
+              });
+            } else {
+              res.send({
+                message: "Fail",
+              });
+            }
+          }
+        );
       } else {
-        res.send({
-          message: "Fail",
-        });
+        console.info(result);
+        console.error(err);
       }
     }
   );
+
+  
 });
 
 // restarting of app, find user by email if token is valid
