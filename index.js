@@ -80,12 +80,13 @@ app.post("/api/auth", async (req, res) => {
         name: user.firstName + " " + user.lastName,
         email: user.email,
         customerId: user.customerId,
-        exp: Math.floor(Date.now() / 1000) + 60 * 20,
+        exp: Math.floor(Date.now() / 1000) + 3600,
         currentTime: Date.now(),
       },
       jwtSecret
     );
     console.log("generating token for " + user.firstName);
+    console.log("Generated Token: " + token);
 
     res.send({
       email: user.email,
