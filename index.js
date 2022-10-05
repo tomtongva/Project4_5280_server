@@ -386,13 +386,14 @@ app.get("/client_token", (req, res) => {
 app.post("/checkout", jwtValidateUserMiddleware, (req, res) => {
   const nonceFromTheClient = req.body.paymentMethodNonce;
   const amount = req.body.amount;
+  const customerId = req.body.customerId;
   // Use payment method nonce here
 
   gateway.transaction.sale(
     {
       amount: amount,
       paymentMethodNonce: nonceFromTheClient,
-      customerId: 622057185,
+      customerId: customerId,
       options: {
         submitForSettlement: true,
       },
