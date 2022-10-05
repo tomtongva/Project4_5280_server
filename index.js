@@ -419,6 +419,8 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
   const amount = req.body.amount;
   const customerId = req.body.customerId;
   const order = req.body.order;
+  console.info('This is the order')
+  console.info(order)
   // Use payment method nonce here
   await gateway.paymentMethod.create(
     {
