@@ -405,37 +405,38 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
       }
     },
     (err, result) => {
-      console.info("Result from paymentmethod create")
-      console.info(result)
-      console.info(result.token)
-      console.info(result.paymentMethod.token)
-
-    }
-  );
-
-  gateway.transaction.sale(
-    {
-      amount: amount,
-      paymentMethodNonce: nonceFromTheClient,
-      customerId: customerId,
-      options: {
-        submitForSettlement: true,
-      },
-    },
-    (err, result) => {
-      console.info("Result from transaction sale")
-      console.info(result)
-      if (result.success) {
-        res.send({
-          message: "Success",
-        });
+      if(result.success) {
+        gateway.transaction.sale(
+          {
+            amount: amount,
+            paymentMethodToken: result.paymentMethod.token,
+            customerId: customerId,
+            options: {
+              submitForSettlement: true,
+            },
+          },
+          (err, result) => {
+            console.info("Result from transaction sale")
+            console.info(result)
+            if (result.success) {
+              res.send({
+                message: "Success",
+              });
+            } else {
+              res.send({
+                message: "Fail",
+              });
+            }
+          }
+        );
       } else {
-        res.send({
-          message: "Fail",
-        });
+        console.info(result);
+        console.error(err);
       }
     }
   );
+
+  
 });
 
 // restarting of app, find user by email if token is valid
