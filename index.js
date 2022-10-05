@@ -375,8 +375,8 @@ app.get("/api/getItems", (req, res) => {
 // Send a client token to your client
 app.get("/client_token", jwtValidateUserMiddleware, (req, res) => {
   console.info(req.headers)
-  console.info(req.headers)
-  let customerId = jwt.decode(req.headers.x-jwt-token).customerId
+  console.info(req.headers['x-jwt-token'])
+  let customerId = jwt.decode(req.headers['x-jwt-token']).customerId
   gateway.clientToken.generate(
     { customerId: customerId },
     (err, response) => {
