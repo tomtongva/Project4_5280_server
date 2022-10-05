@@ -418,6 +418,8 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
           (err, result) => {
             console.info("Result from transaction sale")
             console.info(result)
+            console.info(result.paymentReceipt)
+            console.info(result.transaction)
             if (result.success) {
               res.send({
                 message: "Success",
