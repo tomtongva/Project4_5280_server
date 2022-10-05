@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 8080;
+const port = 443;
 const jwt = require("jsonwebtoken");
 const jwtSecret = "Group3KeyForJWT";
 const headerTokenKey = "x-jwt-token";
@@ -132,24 +132,6 @@ app.post("/api/user/update", jwtValidateUserMiddleware, async (req, res) => {
     res.status(401).send({ error: "user update failed" });
   }
 });
-
-// app.post(
-//   "/api/user/updateCart",
-//   jwtValidateUserMiddleware,
-//   async (req, res) => {
-//     let updated = await updateUserCart(req.decodedToken.uid, req.body.order);
-//     if (updated) {
-//       console.log("send successful updated response back");
-
-//       let decodedToken = req.decodedToken;
-
-//       res.send({ message: "user updated", data: { decoded: decodedToken } });
-//     } else {
-//       console.log("send failed update response back");
-//       res.status(401).send({ error: "user update failed" });
-//     }
-//   }
-// );
 
 const emailValidator = require("deep-email-validator"); //npm install deep-email-validator, https://www.abstractapi.com/guides/node-email-validation
 async function isEmailValid(email) {
@@ -293,21 +275,23 @@ async function createUser(
 }
 
 async function createReceipt(receipt, order, JWT) {
-
-  let payload = jwt.decode(JWT)
+  let payload = jwt.decode(JWT);
   let user = {
     email: payload.email,
     name: payload.name,
-    customerId: payload.customerId
-  }
+    customerId: payload.customerId,
+  };
   try {
     await client.connect();
     const doc = {
       receipt: receipt,
       order: order,
-      user: user
+      user: user,
     };
-    const result = await client.db("transactions").collection("receipts").insertOne(doc);
+    const result = await client
+      .db("transactions")
+      .collection("receipts")
+      .insertOne(doc);
     if (result) {
       console.log("receipt created with id " + result.insertedId);
       return result.insertedId;
@@ -401,16 +385,13 @@ app.get("/api/getItems", (req, res) => {
 
 // Send a client token to your client
 app.get("/client_token", jwtValidateUserMiddleware, (req, res) => {
-  let customerId = jwt.decode(req.header(headerTokenKey)).customerId
-  gateway.clientToken.generate(
-    { customerId: customerId },
-    (err, response) => {
-      console.info(response.clientToken)
-      res.send({
-        token: response.clientToken,
-      });
-    }
-  );
+  let customerId = jwt.decode(req.header(headerTokenKey)).customerId;
+  gateway.clientToken.generate({ customerId: customerId }, (err, response) => {
+    console.info(response.clientToken);
+    res.send({
+      token: response.clientToken,
+    });
+  });
 });
 
 // Receive a payment method nonce from your client
@@ -419,8 +400,8 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
   const amount = req.body.amount;
   const customerId = req.body.customerId;
   const order = req.body.order;
-  console.info('This is the order')
-  console.info(order)
+  console.info("This is the order");
+  console.info(order);
   // Use payment method nonce here
   await gateway.paymentMethod.create(
     {
@@ -428,11 +409,11 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
       customerId: customerId,
       options: {
         failOnDuplicatePaymentMethod: true,
-        verifyCard: true
-      }
+        verifyCard: true,
+      },
     },
     (err, result) => {
-      if(result.success) {
+      if (result.success) {
         gateway.transaction.sale(
           {
             amount: amount,
@@ -443,12 +424,16 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
             },
           },
           async (err, result) => {
-            console.info("Result from transaction sale")
+            console.info("Result from transaction sale");
             // console.info(result)
-            console.info(result.transaction.paymentReceipt)
+            console.info(result.transaction.paymentReceipt);
             // console.info(result.transaction)
             if (result.success) {
-              await createReceipt(result.transaction.paymentReceipt, order, req.header(headerTokenKey))
+              await createReceipt(
+                result.transaction.paymentReceipt,
+                order,
+                req.header(headerTokenKey)
+              );
               res.send({
                 message: "Success",
               });
@@ -465,8 +450,6 @@ app.post("/checkout", jwtValidateUserMiddleware, async (req, res) => {
       }
     }
   );
-
-  
 });
 
 // restarting of app, find user by email if token is valid
