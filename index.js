@@ -412,6 +412,31 @@ app.post("/checkout", jwtValidateUserMiddleware, (req, res) => {
   );
 });
 
+// Receive a payment method nonce from your client
+app.post("/addPaymentMethod", jwtValidateUserMiddleware, (req, res) => {
+  const nonceFromTheClient = req.body.paymentMethodNonce;
+  const customerId = req.body.customerId;
+  // Use payment method nonce here
+
+  gateway.paymentMethod.create(
+    {
+      paymentMethodNonce: nonceFromTheClient,
+      customerId: customerId
+    },
+    (err, result) => {
+      if (result.success) {
+        res.send({
+          message: "Success",
+        });
+      } else {
+        res.send({
+          message: "Fail",
+        });
+      }
+    }
+  );
+});
+
 // restarting of app, find user by email if token is valid
 app.post("/api/user/find", jwtValidateUserMiddleware, async (req, res) => {
   console.log("find user by email after token validated " + req.body.email);
