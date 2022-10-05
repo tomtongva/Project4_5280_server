@@ -372,9 +372,12 @@ app.get("/api/getItems", (req, res) => {
 
 // Send a client token to your client
 app.get("/client_token", (req, res) => {
+  console.info(req.body)
+  console.info(req.body.customerId)
   gateway.clientToken.generate(
     { customerId: req.body.customerId },
     (err, response) => {
+      console.info(response.clientToken)
       res.send({
         token: response.clientToken,
       });
